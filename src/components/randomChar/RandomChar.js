@@ -94,13 +94,7 @@ const View = ({ char }) => {
       />
       <div className="randomchar__info">
         <p className="randomchar__name">{name}</p>
-        <p className="randomchar__descr">
-          {description
-            ? description.length <= 35
-              ? description
-              : description.substring(0, 35) + "..."
-            : "There is no description for this character"}
-        </p>
+        <p className="randomchar__descr">{description}</p>
         <div className="randomchar__btns">
           <a href={homepage} className="button button__main">
             <div className="inner">homepage</div>

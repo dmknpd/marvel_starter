@@ -1,4 +1,6 @@
-import { Component } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+
 import Spinner from "../spinner/Spinner";
 import ErrorMessage from "../errorMessage/ErrorMessage";
 import MarvelService from "../../services/MarvelService";
@@ -67,10 +69,24 @@ class CharList extends Component {
     });
   };
 
+  itemRefs = [];
+
+  setRef = (ref) => {
+    this.itemRefs.push(ref);
+  };
+
+  focusOnItem = (index) => {
+    this.itemRefs.forEach((item) =>
+      item.classList.remove("char__item_selected")
+    );
+    this.itemRefs[index].classList.add("char__item_selected");
+    this.itemRefs[index].focus();
+  };
+
   // Этот метод создан для оптимизации,
   // чтобы не помещать такую конструкцию в метод render
   renderItems(arr) {
-    const items = arr.map((item) => {
+    const items = arr.map((item, index) => {
       let imgStyle = { objectFit: "cover" };
       if (
         item.thumbnail ===
@@ -82,8 +98,19 @@ class CharList extends Component {
       return (
         <li
           className="char__item"
+          ref={this.setRef}
+          tabIndex={0}
           key={item.id}
-          onClick={() => this.props.onCharSelected(item.id)}
+          onClick={() => {
+            this.props.onCharSelected(item.id);
+            this.focusOnItem(index);
+          }}
+          onKeyPress={(e) => {
+            if (e.key === " " || e.key === "Enter") {
+              this.props.onCharSelected(item.id);
+              this.focusOnItem(index);
+            }
+          }}
         >
           <img src={item.thumbnail} alt={item.name} style={imgStyle} />
           <div className="char__name">{item.name}</div>
@@ -121,5 +148,9 @@ class CharList extends Component {
     );
   }
 }
+
+CharList.propTypes = {
+  onCharSelected: PropTypes.func.isRequired,
+};
 
 export default CharList;
